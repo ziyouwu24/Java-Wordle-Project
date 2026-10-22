@@ -1,0 +1,2950 @@
+
+Scenario: A knight will become a coward once his health drops below Coward Threshold # features/changingStrategy.feature:6
+  Given a maze with the following rooms and neighbors:                               # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room     | Neighbors |
+    | Starting | Other     |
+    | Other    | Starting  |
+  And a knight Bilbo with health 6 and a fixed die roll of 2                         # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bilbo is in the Starting room                                                  # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Goblin with health 3 and a fixed die roll of 5                      # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Goblin is in the Starting room                                                 # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And the Coward Threshold is 3                                                      # polymorphia.stepdefs.CharacterStepDefs.theCowardThresholdIs(double)
+Character Bilbo is doing their turn in room Starting
+Bilbo is fighting Goblin(health: 3.00, FixedDie{5})
+Bilbo rolled 2
+Goblin(health: 3.00, FixedDie{5}) rolled 5
+Bilbo is now a coward!
+  When Bilbo plays a turn                                                            # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+Bilbo has health 2.45
+Expected health: 2.45
+  Then Bilbo has health 2.45                                                         # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+  And a fight occured                                                                # polymorphia.stepdefs.PolymorphiaStepDefs.aFightOccured()
+Character Bilbo is doing their turn in room Starting
+Bilbo moved from Starting to Other
+  When Bilbo plays a turn                                                            # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Other room                                                    # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+
+Scenario: A glutton will become a fighter once they have killed a creature # features/changingStrategy.feature:31
+  Given a maze with the following rooms and neighbors:                     # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room     | Neighbors |
+    | Starting | Other     |
+    | Other    | Starting  |
+  And a glutton Bilbo with health 5 and a fixed die roll of 5              # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bilbo is in the Starting room                                        # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Goblin with health 2 and a fixed die roll of 2            # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Goblin is in the Starting room                                       # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Goblin is doing their turn in room Starting
+Goblin is fighting Bilbo(health: 5.00, FixedDie{5})
+Goblin rolled 2
+Bilbo(health: 5.00, FixedDie{5}) rolled 5
+Goblin just died!
+Bilbo is no longer a coward, but a fighter
+  When Goblin plays a turn                                                 # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Goblin is now dead                                                  # polymorphia.stepdefs.CharacterStepDefs.characterIsDead(java.lang.String)
+  Then a fight occured                                                     # polymorphia.stepdefs.PolymorphiaStepDefs.aFightOccured()
+Bilbo has health 4.5
+Expected health: 4.5
+  And Bilbo has health 4.5                                                 # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+  Given a creature Orc with health 4 and a fixed die roll of 3             # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Orc is in the Starting room                                          # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And the Starting room contains the following food items:                 # polymorphia.stepdefs.MazeStepDefs.roomContainsTheFollowingFoodItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Name    | Value |
+    | cupcake | 1.0   |
+Character Bilbo is doing their turn in room Starting
+Bilbo is fighting Orc(health: 4.00, FixedDie{3})
+Bilbo rolled 5
+Orc(health: 4.00, FixedDie{3}) rolled 3
+  When Bilbo plays a turn                                                  # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Starting room                                       # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a fight occured                                                      # polymorphia.stepdefs.PolymorphiaStepDefs.aFightOccured()
+Bilbo has health 3.95
+Expected health: 3.95
+  And Bilbo has health 3.95                                                # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+Orc has health 1.5
+Expected health: 1.5
+  And Orc has health 1.5                                                   # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+
+Scenario: A coward will become a seeker once they have picked up a map # features/changingStrategy.feature:65
+  Given a maze with the following rooms and neighbors:                 # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room     | Neighbors |
+    | Starting | Other     |
+    | Other    | Starting  |
+No adventurers created. Terminating game.
+  And the Starting room contains the following artifacts items:        # polymorphia.stepdefs.MazeStepDefs.theOtherRoomContainsTheFollowingArtifactsItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Type     | Name  | Value |
+    | Treasure | Chest | 0.0   |
+  And the Other room contains the following artifacts items:           # polymorphia.stepdefs.MazeStepDefs.theOtherRoomContainsTheFollowingArtifactsItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Type         | Name       | Value |
+    | Food         | cupcake    | 1.0   |
+    | Treasure Map | MapToChest | 0.0   |
+  And a coward Bilbo with health 5 and a fixed die roll of 5           # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bilbo is in the Starting room                                    # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Goblin with health 2 and a fixed die roll of 2        # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Goblin is in the Starting room                                   # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo moved from Starting to Other
+  When Bilbo plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Other room                                      # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Other
+  When Bilbo plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then the Other room no longer contains Treasure Map                  # polymorphia.stepdefs.MazeStepDefs.roomNoLongerContainsArtifact(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Other
+  When Bilbo plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Starting room                                   # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo looking for treasure in room Starting
+Bilbo is fighting Goblin(health: 2.00, FixedDie{2})
+Bilbo rolled 5
+Goblin(health: 2.00, FixedDie{2}) rolled 2
+Goblin just died!
+  When Bilbo plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  And Goblin is now dead                                               # polymorphia.stepdefs.CharacterStepDefs.characterIsDead(java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo looking for treasure in room Starting
+Bilbo found the treasure in room Starting!
+  When Bilbo plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then the Other room no longer contains Chest                         # polymorphia.stepdefs.MazeStepDefs.roomNoLongerContainsArtifact(java.lang.String,java.lang.String)
+  And Bilbo has found the treasure                                     # polymorphia.stepdefs.CharacterStepDefs.characterHasFoundTheTreasure(java.lang.String)
+  And the game is over                                                 # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+
+Scenario: A Knight moves if nothing is in the current room # features/characters.feature:6
+  Given a fully-connected maze with the following rooms:   # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting |
+    | Final    |
+  And a knight named Galahad in the Starting room          # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Galahad is doing their turn in room Starting
+Galahad moved from Starting to Final
+  When Galahad plays a turn                                # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Final room contains Galahad                         # polymorphia.stepdefs.MazeStepDefs.roomContainsCharacter(java.lang.String,java.lang.String)
+  And Starting room does not contain Galahad               # polymorphia.stepdefs.MazeStepDefs.roomDoesNotContainCharacter(java.lang.String,java.lang.String)
+
+Scenario: A Knight will fight a Creature even if he can run away # features/characters.feature:17
+  Given a fully-connected maze with the following rooms:         # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting  |
+    | OtherRoom |
+  And a knight named Galahad in the Starting room                # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And a creature named Ogre in the Starting room                 # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Galahad is doing their turn in room Starting
+Galahad is fighting Ogre(health: 5.00, RandomDie{sides=6})
+Galahad rolled 3
+Ogre(health: 5.00, RandomDie{sides=6}) rolled 5
+  When Galahad plays a turn                                      # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Ogre lost some health                                     # polymorphia.stepdefs.CharacterStepDefs.characterLostSomeHealth(java.lang.String)
+  And a fight occured                                            # polymorphia.stepdefs.PolymorphiaStepDefs.aFightOccured()
+
+Scenario: A Knight will eat food if no creature is in the room # features/characters.feature:29
+  Given a fully-connected maze with the following rooms:       # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting  |
+    | OtherRoom |
+  And the Starting room contains the following food items:     # polymorphia.stepdefs.MazeStepDefs.roomContainsTheFollowingFoodItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Name    | Value |
+    | cupcake | 1.0   |
+  And a knight named Galahad in the Starting room              # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Galahad is doing their turn in room Starting
+  When Galahad plays a turn                                    # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then the Starting room no longer contains cupcake            # polymorphia.stepdefs.MazeStepDefs.roomNoLongerContainsArtifact(java.lang.String,java.lang.String)
+  And Galahad is in the Starting room                          # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And Galahad has gained 0.95 in health                        # polymorphia.stepdefs.CharacterStepDefs.characterHasGainedInHealth(java.lang.String,java.lang.Double)
+
+Scenario: Behavior of a Glutton                            # features/characters.feature:45
+  Given a fully-connected maze with the following rooms:   # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting |
+    | Final    |
+  And a glutton named Tiny in the Starting room            # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And the Starting room contains the following food items: # polymorphia.stepdefs.MazeStepDefs.roomContainsTheFollowingFoodItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Name    | Value |
+    | cupcake | 1.0   |
+Character Tiny is doing their turn in room Starting
+  When Tiny plays a turn                                   # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then the Starting room no longer contains cupcake        # polymorphia.stepdefs.MazeStepDefs.roomNoLongerContainsArtifact(java.lang.String,java.lang.String)
+  And Tiny has gained 0.95 in health                       # polymorphia.stepdefs.CharacterStepDefs.characterHasGainedInHealth(java.lang.String,java.lang.Double)
+
+Scenario: Glutton will never fight a Creature even if he cannot run away # features/characters.feature:59
+  Given a fully-connected maze with the following rooms:                 # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Only |
+  And a glutton EatsALot with health 3.0                                 # polymorphia.stepdefs.CharacterStepDefs.createCharacterWithHealth(java.lang.String,java.lang.String,double)
+  And EatsALot is in the Only room                                       # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature named Ogre in the Only room                             # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character EatsALot is doing their turn in room Only
+  When EatsALot plays a turn                                             # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+EatsALot has health 2.95
+Expected health: 2.95
+  Then EatsALot has health 2.95                                          # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+
+Scenario: Coward will run away if it can                            # features/characters.feature:72
+  Given a maze with the following rooms:                            # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting |
+    | Other    |
+    | Third    |
+    | Fourth   |
+  And each room is connected to 2 other rooms via 1-way connections # polymorphia.stepdefs.MazeStepDefs.eachRoomIsConnectedToOtherRoomsViaConnections(int,java.lang.String)
+  And a coward named RunAway in the Starting room                   # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And a creature named Ogre in the Starting room                    # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And Ogre is in the Starting room                                  # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And food Popcorn is in the Starting room                          # polymorphia.stepdefs.MazeStepDefs.foodIsInTheRoom(java.lang.String,java.lang.String)
+Character RunAway is doing their turn in room Starting
+RunAway moved from Starting to Third
+  When RunAway plays a turn                                         # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Ogre did not lose some health                                # polymorphia.stepdefs.CharacterStepDefs.characterDidNotLoseSomeHealth(java.lang.String)
+  And RunAway lost some health                                      # polymorphia.stepdefs.CharacterStepDefs.characterLostSomeHealth(java.lang.String)
+  And RunAway is in the Other room                                  # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+
+Scenario: Glutton will eat food if it is available over fighting or running # features/characters.feature:91
+  Given a fully-connected maze with the following rooms:                    # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting  |
+    | OtherRoom |
+  And the Starting room contains the following food items:                  # polymorphia.stepdefs.MazeStepDefs.roomContainsTheFollowingFoodItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Name  | Value |
+    | apple | 1.0   |
+  And a glutton named Eats-a-lot in the Starting room                       # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And a creature named Ogre in the Starting room                            # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Eats-a-lot is doing their turn in room Starting
+  When Eats-a-lot plays a turn                                              # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Eats-a-lot is in the Starting room                                   # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And the Starting room has 0 food items                                    # polymorphia.stepdefs.MazeStepDefs.theRoomHasFoodItems(java.lang.String,int)
+  And Eats-a-lot has gained 0.95 in health                                  # polymorphia.stepdefs.CharacterStepDefs.characterHasGainedInHealth(java.lang.String,java.lang.Double)
+  And Ogre did not lose some health                                         # polymorphia.stepdefs.CharacterStepDefs.characterDidNotLoseSomeHealth(java.lang.String)
+
+Scenario: A Demon will fight a Glutton even when food and neighboring rooms are available # features/characters.feature:109
+  Given a fully-connected maze with the following rooms:                                  # polymorphia.stepdefs.MazeStepDefs.aFullyConnectedMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting  |
+    | OtherRoom |
+  And a glutton EatsALot with health 3.0 and a fixed die roll of 3                        # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And EatsALot is in the Starting room                                                    # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a demon Satan with health 10.0 and a fixed die roll of 5                            # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Satan is in the Starting room                                                       # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And the Starting room contains the following food items:                                # polymorphia.stepdefs.MazeStepDefs.roomContainsTheFollowingFoodItems(java.lang.String,java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Name  | Value |
+    | apple | 1.0   |
+Character Satan is doing their turn in room Starting
+Satan is fighting EatsALot(health: 3.00, FixedDie{3})
+Satan rolled 5
+EatsALot(health: 3.00, FixedDie{3}) rolled 3
+  When Satan plays a turn                                                                 # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then a fight occured                                                                    # polymorphia.stepdefs.PolymorphiaStepDefs.aFightOccured()
+EatsALot has health 0.5
+Expected health: 0.5
+  And EatsALot has health 0.5                                                             # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+Satan has health 9.45
+Expected health: 9.45
+  And Satan has health 9.45                                                               # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+
+Scenario: Play the simplest game                            # features/gamePlay.feature:7
+  Given a maze with the following attributes:               # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingAttributes(java.util.Map<java.lang.String, java.lang.Integer>)
+    | number of rooms     | 1 |
+    | number of knights   | 1 |
+    | number of creatures | 1 |
+Starting play...
+Polymorphia MAZE: turn 0
+	Room of Horrors:
+		Isildur(health: 10.00, RandomDie{sides=6})
+		Troll(health: 5.00, RandomDie{sides=6})
+Isildur is fighting Troll(health: 5.00, RandomDie{sides=6})
+Isildur rolled 4
+Troll(health: 5.00, RandomDie{sides=6}) rolled 1
+Troll is fighting Isildur(health: 9.45, RandomDie{sides=6})
+Troll rolled 2
+Isildur(health: 9.45, RandomDie{sides=6}) rolled 2
+Polymorphia MAZE: turn 1
+	Room of Horrors:
+		Isildur(health: 8.95, RandomDie{sides=6})
+		Troll(health: 0.95, RandomDie{sides=6})
+Isildur is fighting Troll(health: 0.95, RandomDie{sides=6})
+Isildur rolled 2
+Troll(health: 0.95, RandomDie{sides=6}) rolled 1
+Troll just died!
+The game ended after 2 turns.
+The adventurers won! Left standing are: Isildur(health: 8.40, RandomDie{sides=6})
+  When the game is played in the created maze               # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                     # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And all the adventurers or all of the creatures have died # polymorphia.stepdefs.PolymorphiaStepDefs.allTheAdventurersOrAllOfTheCreaturesHaveDied()
+
+Scenario: Play a complicated game                           # features/gamePlay.feature:19
+  Given a maze with the following attributes:               # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingAttributes(java.util.Map<java.lang.String, java.lang.Integer>)
+    | number of rooms      | 7  |
+    | number of food items | 20 |
+    | number of knights    | 4  |
+    | number of gluttons   | 3  |
+    | number of cowards    | 1  |
+    | number of creatures  | 5  |
+    | number of demons     | 2  |
+    | number of seekers    | 2  |
+    | number of treasures  | 1  |
+Starting play...
+Polymorphia MAZE: turn 0
+	Room of Horrors:
+		Satan(health: 15.00, RandomDie{sides=6})
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 10.00, RandomDie{sides=6})
+		donut(1.31)
+		banana(1.78)
+		eggs(1.40)
+		banana(1.15)
+		rice(1.56)
+
+	Pit of Despair:
+		bacon(1.56)
+		taco(1.10)
+		donut(1.82)
+		pasta(1.62)
+
+	Sanctuary:
+		Orc(health: 5.00, RandomDie{sides=6})
+		Beelzebub(health: 15.00, RandomDie{sides=6})
+		Lady Munches(health: 6.00, RandomDie{sides=6})
+		Guard of quartz(health: 5.00, RandomDie{sides=6})
+		Lady Munches(health: 6.00, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		Troll(health: 5.00, RandomDie{sides=6})
+		Ogre(health: 5.00, RandomDie{sides=6})
+		Dragon(health: 5.00, RandomDie{sides=6})
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+		Lady Brienne(health: 10.00, RandomDie{sides=6})
+		Lady Munches(health: 6.00, RandomDie{sides=6})
+		Isildur(health: 10.00, RandomDie{sides=6})
+		Troll(health: 5.00, RandomDie{sides=6})
+
+	Fangorn Forest:
+		King Arthur(health: 10.00, RandomDie{sides=6})
+		Lady Runaway(health: 8.00, RandomDie{sides=6})
+		chips(1.74)
+		salad(1.25)
+		burrito(1.30)
+		burger(1.63)
+Satan moved from Room of Horrors to Map Room
+Orc is fighting Beelzebub(health: 15.00, RandomDie{sides=6})
+Orc rolled 6
+Beelzebub(health: 15.00, RandomDie{sides=6}) rolled 3
+Beelzebub is fighting Orc(health: 4.45, RandomDie{sides=6})
+Beelzebub rolled 4
+Orc(health: 4.45, RandomDie{sides=6}) rolled 1
+Lady Munches moved from Sanctuary to Dungeon
+Lady Munches moved from Sanctuary to Dungeon
+Troll is fighting Ogre(health: 5.00, RandomDie{sides=6})
+Troll rolled 3
+Ogre(health: 5.00, RandomDie{sides=6}) rolled 2
+Ogre is fighting Troll(health: 4.45, RandomDie{sides=6})
+Ogre rolled 1
+Troll(health: 4.45, RandomDie{sides=6}) rolled 1
+Dragon is fighting Troll(health: 3.95, RandomDie{sides=6})
+Dragon rolled 4
+Troll(health: 3.95, RandomDie{sides=6}) rolled 1
+Satan is fighting Lady Brienne(health: 10.00, RandomDie{sides=6})
+Satan rolled 3
+Lady Brienne(health: 10.00, RandomDie{sides=6}) rolled 6
+Lady Brienne is fighting Satan(health: 11.15, RandomDie{sides=6})
+Lady Brienne rolled 3
+Satan(health: 11.15, RandomDie{sides=6}) rolled 1
+Lady Munches moved from Map Room to Dungeon
+Isildur is fighting Satan(health: 8.65, RandomDie{sides=6})
+Isildur rolled 5
+Satan(health: 8.65, RandomDie{sides=6}) rolled 6
+Troll is fighting Satan(health: 8.15, RandomDie{sides=6})
+Troll rolled 5
+Satan(health: 8.15, RandomDie{sides=6}) rolled 6
+Polymorphia MAZE: turn 1
+	Room of Horrors:
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 11.26, RandomDie{sides=6})
+		Lady Munches(health: 5.70, RandomDie{sides=6})
+		Lady Munches(health: 5.70, RandomDie{sides=6})
+		Lady Munches(health: 5.70, RandomDie{sides=6})
+		banana(1.78)
+		eggs(1.40)
+		banana(1.15)
+		rice(1.56)
+
+	Pit of Despair:
+		bacon(1.56)
+		taco(1.10)
+		donut(1.82)
+		pasta(1.62)
+
+	Sanctuary:
+		Orc(health: 0.95, RandomDie{sides=6})
+		Beelzebub(health: 10.95, RandomDie{sides=6})
+		Guard of quartz(health: 4.95, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		Troll(health: 0.45, RandomDie{sides=6})
+		Ogre(health: 2.95, RandomDie{sides=6})
+		Dragon(health: 4.45, RandomDie{sides=6})
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+		Satan(health: 7.65, RandomDie{sides=6})
+		Lady Brienne(health: 8.95, RandomDie{sides=6})
+		Isildur(health: 8.45, RandomDie{sides=6})
+		Troll(health: 3.45, RandomDie{sides=6})
+
+	Fangorn Forest:
+		King Arthur(health: 11.69, RandomDie{sides=6})
+		Lady Runaway(health: 9.20, RandomDie{sides=6})
+		burrito(1.30)
+		burger(1.63)
+Orc is fighting Beelzebub(health: 10.95, RandomDie{sides=6})
+Orc rolled 1
+Beelzebub(health: 10.95, RandomDie{sides=6}) rolled 1
+Beelzebub is fighting Orc(health: 0.40, RandomDie{sides=6})
+Beelzebub rolled 1
+Orc(health: 0.40, RandomDie{sides=6}) rolled 6
+Orc just died!
+Troll is fighting Ogre(health: 2.95, RandomDie{sides=6})
+Troll rolled 6
+Ogre(health: 2.95, RandomDie{sides=6}) rolled 4
+Troll just died!
+Ogre is fighting Dragon(health: 4.45, RandomDie{sides=6})
+Ogre rolled 1
+Dragon(health: 4.45, RandomDie{sides=6}) rolled 3
+Ogre just died!
+Dragon moved from Den of Souls to Dungeon
+Satan is fighting Lady Brienne(health: 8.95, RandomDie{sides=6})
+Satan rolled 3
+Lady Brienne(health: 8.95, RandomDie{sides=6}) rolled 5
+Lady Brienne is fighting Satan(health: 5.10, RandomDie{sides=6})
+Lady Brienne rolled 3
+Satan(health: 5.10, RandomDie{sides=6}) rolled 3
+Isildur is fighting Satan(health: 4.60, RandomDie{sides=6})
+Isildur rolled 6
+Satan(health: 4.60, RandomDie{sides=6}) rolled 1
+Satan just died!
+Troll is fighting Lady Brienne(health: 7.90, RandomDie{sides=6})
+Troll rolled 2
+Lady Brienne(health: 7.90, RandomDie{sides=6}) rolled 1
+Polymorphia MAZE: turn 2
+	Room of Horrors:
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 12.99, RandomDie{sides=6})
+		Lady Munches(health: 7.05, RandomDie{sides=6})
+		Lady Munches(health: 6.80, RandomDie{sides=6})
+		Dragon(health: 3.65, RandomDie{sides=6})
+		Lady Munches(health: 7.21, RandomDie{sides=6})
+
+	Pit of Despair:
+		bacon(1.56)
+		taco(1.10)
+		donut(1.82)
+		pasta(1.62)
+
+	Sanctuary:
+		Beelzebub(health: 4.90, RandomDie{sides=6})
+		Guard of quartz(health: 4.90, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+		Lady Brienne(health: 6.40, RandomDie{sides=6})
+		Isildur(health: 7.90, RandomDie{sides=6})
+		Troll(health: 2.90, RandomDie{sides=6})
+
+	Fangorn Forest:
+		King Arthur(health: 12.94, RandomDie{sides=6})
+		Lady Runaway(health: 10.78, RandomDie{sides=6})
+Lady Brienne is fighting Dragon(health: 3.65, RandomDie{sides=6})
+Lady Brienne rolled 3
+Dragon(health: 3.65, RandomDie{sides=6}) rolled 3
+Lady Munches moved from Dungeon to Sanctuary
+Lady Munches moved from Dungeon to Pit of Despair
+Dragon is fighting Lady Brienne(health: 12.44, RandomDie{sides=6})
+Dragon rolled 5
+Lady Brienne(health: 12.44, RandomDie{sides=6}) rolled 5
+Lady Munches moved from Dungeon to Fangorn Forest
+Beelzebub is fighting Lady Munches(health: 6.75, RandomDie{sides=6})
+Beelzebub rolled 6
+Lady Munches(health: 6.75, RandomDie{sides=6}) rolled 6
+Lady Munches moved from Sanctuary to Dungeon
+Lady Brienne is fighting Troll(health: 2.90, RandomDie{sides=6})
+Lady Brienne rolled 4
+Troll(health: 2.90, RandomDie{sides=6}) rolled 3
+Isildur is fighting Troll(health: 1.40, RandomDie{sides=6})
+Isildur rolled 5
+Troll(health: 1.40, RandomDie{sides=6}) rolled 6
+Troll is fighting Lady Brienne(health: 5.85, RandomDie{sides=6})
+Troll rolled 6
+Lady Brienne(health: 5.85, RandomDie{sides=6}) rolled 3
+Lady Brienne is now a coward!
+King Arthur moved from Fangorn Forest to Map Room
+Lady Runaway moved from Fangorn Forest to Dungeon
+Lady Munches moved from Fangorn Forest to Map Room
+Polymorphia MAZE: turn 3
+	Room of Horrors:
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 11.94, RandomDie{sides=6})
+		Lady Munches(health: 5.95, RandomDie{sides=6})
+		Dragon(health: 2.60, RandomDie{sides=6})
+		Lady Runaway(health: 10.48, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Munches(health: 8.01, RandomDie{sides=6})
+		taco(1.10)
+		donut(1.82)
+		pasta(1.62)
+
+	Sanctuary:
+		Beelzebub(health: 4.35, RandomDie{sides=6})
+		Guard of quartz(health: 4.85, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+		Lady Brienne(health: 2.35, RandomDie{sides=6})
+		Isildur(health: 6.35, RandomDie{sides=6})
+		King Arthur(health: 12.64, RandomDie{sides=6})
+		Troll(health: 0.35, RandomDie{sides=6})
+		Lady Munches(health: 6.61, RandomDie{sides=6})
+
+	Fangorn Forest:
+
+Lady Brienne is fighting Dragon(health: 2.60, RandomDie{sides=6})
+Lady Brienne rolled 1
+Dragon(health: 2.60, RandomDie{sides=6}) rolled 5
+Lady Munches moved from Dungeon to Sanctuary
+Dragon is fighting Lady Brienne(health: 7.39, RandomDie{sides=6})
+Dragon rolled 5
+Lady Brienne(health: 7.39, RandomDie{sides=6}) rolled 3
+Lady Runaway moved from Dungeon to Fangorn Forest
+Beelzebub is fighting Lady Munches(health: 5.65, RandomDie{sides=6})
+Beelzebub rolled 2
+Lady Munches(health: 5.65, RandomDie{sides=6}) rolled 1
+Lady Munches moved from Sanctuary to Dungeon
+Lady Brienne moved from Map Room to Fangorn Forest
+Isildur is fighting Troll(health: 0.35, RandomDie{sides=6})
+Isildur rolled 2
+Troll(health: 0.35, RandomDie{sides=6}) rolled 6
+Isildur is now a coward!
+Troll just died!
+King Arthur moved from Map Room to Dungeon
+Lady Munches moved from Map Room to Fangorn Forest
+Lady Brienne moved from Fangorn Forest to Map Room
+Lady Runaway moved from Fangorn Forest to Map Room
+Lady Munches moved from Fangorn Forest to Map Room
+Polymorphia MAZE: turn 4
+	Room of Horrors:
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 4.89, RandomDie{sides=6})
+		Lady Munches(health: 3.85, RandomDie{sides=6})
+		Dragon(health: 1.55, RandomDie{sides=6})
+		King Arthur(health: 12.34, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Munches(health: 9.06, RandomDie{sides=6})
+		donut(1.82)
+		pasta(1.62)
+
+	Sanctuary:
+		Beelzebub(health: 3.80, RandomDie{sides=6})
+		Guard of quartz(health: 4.80, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+		Lady Brienne(health: 1.75, RandomDie{sides=6})
+		Isildur(health: 1.80, RandomDie{sides=6})
+		Lady Runaway(health: 9.88, RandomDie{sides=6})
+		Lady Munches(health: 6.01, RandomDie{sides=6})
+
+	Fangorn Forest:
+
+Lady Brienne is fighting Dragon(health: 1.55, RandomDie{sides=6})
+Lady Brienne rolled 1
+Dragon(health: 1.55, RandomDie{sides=6}) rolled 5
+Lady Brienne is now a coward!
+Lady Munches moved from Dungeon to Sanctuary
+Dragon is fighting Lady Brienne(health: 0.34, RandomDie{sides=6})
+Dragon rolled 4
+Lady Brienne(health: 0.34, RandomDie{sides=6}) rolled 1
+Lady Brienne just died!
+King Arthur is fighting Dragon(health: 0.50, RandomDie{sides=6})
+King Arthur rolled 3
+Dragon(health: 0.50, RandomDie{sides=6}) rolled 4
+Beelzebub is fighting Lady Munches(health: 3.55, RandomDie{sides=6})
+Beelzebub rolled 6
+Lady Munches(health: 3.55, RandomDie{sides=6}) rolled 1
+Lady Munches just died!
+Lady Brienne moved from Map Room to Dungeon
+Isildur moved from Map Room to Room of Horrors
+Lady Runaway moved from Map Room to Dungeon
+Lady Munches moved from Map Room to Room of Horrors
+Polymorphia MAZE: turn 5
+	Room of Horrors:
+		Isildur(health: 1.50, RandomDie{sides=6})
+		Lady Munches(health: 5.71, RandomDie{sides=6})
+		burrito(1.09)
+		chicken(1.63)
+		banana(1.21)
+
+	Dungeon:
+		Lady Brienne(health: 1.45, RandomDie{sides=6})
+		Dragon(health: 0.00, RandomDie{sides=6})
+		King Arthur(health: 10.79, RandomDie{sides=6})
+		Lady Runaway(health: 9.58, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Munches(health: 10.83, RandomDie{sides=6})
+		pasta(1.62)
+
+	Sanctuary:
+		Beelzebub(health: 3.25, RandomDie{sides=6})
+		Guard of quartz(health: 4.75, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		steak(1.76)
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+Lady Brienne moved from Dungeon to Den of Souls
+Dragon is fighting King Arthur(health: 10.79, RandomDie{sides=6})
+Dragon rolled 6
+King Arthur(health: 10.79, RandomDie{sides=6}) rolled 2
+Dragon just died!
+King Arthur moved from Dungeon to Fangorn Forest
+Lady Runaway moved from Dungeon to Pit of Despair
+Lady Runaway moved from Pit of Despair to Room of Horrors
+Beelzebub is fighting Guard of quartz(health: 4.75, RandomDie{sides=6})
+Beelzebub rolled 5
+Guard of quartz(health: 4.75, RandomDie{sides=6}) rolled 3
+King Arthur moved from Fangorn Forest to Dungeon
+Polymorphia MAZE: turn 6
+	Room of Horrors:
+		Isildur(health: 2.54, RandomDie{sides=6})
+		Lady Runaway(health: 8.98, RandomDie{sides=6})
+		Lady Munches(health: 7.29, RandomDie{sides=6})
+		banana(1.21)
+
+	Dungeon:
+		King Arthur(health: 5.69, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Munches(health: 12.40, RandomDie{sides=6})
+
+	Sanctuary:
+		Beelzebub(health: 2.70, RandomDie{sides=6})
+		Guard of quartz(health: 2.20, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		Lady Brienne(health: 2.86, RandomDie{sides=6})
+		taco(1.67)
+		salad(1.74)
+		taco(1.74)
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+Lady Runaway moved from Room of Horrors to Den of Souls
+Lady Munches moved from Room of Horrors to Map Room
+King Arthur moved from Dungeon to Sanctuary
+Lady Munches moved from Pit of Despair to Room of Horrors
+Beelzebub is fighting Guard of quartz(health: 2.20, RandomDie{sides=6})
+Beelzebub rolled 1
+Guard of quartz(health: 2.20, RandomDie{sides=6}) rolled 2
+King Arthur is fighting Beelzebub(health: 1.15, RandomDie{sides=6})
+King Arthur rolled 2
+Beelzebub(health: 1.15, RandomDie{sides=6}) rolled 4
+King Arthur is now a coward!
+Lady Munches moved from Map Room to Fangorn Forest
+Lady Munches moved from Fangorn Forest to Dungeon
+Polymorphia MAZE: turn 7
+	Room of Horrors:
+		Lady Munches(health: 12.10, RandomDie{sides=6})
+		Isildur(health: 3.70, RandomDie{sides=6})
+
+	Dungeon:
+		Lady Munches(health: 6.39, RandomDie{sides=6})
+
+	Pit of Despair:
+
+
+	Sanctuary:
+		Beelzebub(health: 0.65, RandomDie{sides=6})
+		Guard of quartz(health: 1.65, RandomDie{sides=6})
+		King Arthur(health: 2.84, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		Lady Brienne(health: 4.47, RandomDie{sides=6})
+		Lady Runaway(health: 10.37, RandomDie{sides=6})
+		taco(1.74)
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+Lady Munches moved from Room of Horrors to Map Room
+Isildur moved from Room of Horrors to Map Room
+Lady Munches moved from Dungeon to Sanctuary
+Beelzebub is fighting Guard of quartz(health: 1.65, RandomDie{sides=6})
+Beelzebub rolled 5
+Guard of quartz(health: 1.65, RandomDie{sides=6}) rolled 3
+Guard of quartz just died!
+King Arthur moved from Sanctuary to Dungeon
+Lady Munches moved from Sanctuary to Dungeon
+Lady Runaway moved from Den of Souls to Dungeon
+Lady Munches moved from Map Room to Dungeon
+Isildur moved from Map Room to Fangorn Forest
+Isildur moved from Fangorn Forest to Dungeon
+Polymorphia MAZE: turn 8
+	Room of Horrors:
+
+
+	Dungeon:
+		Lady Munches(health: 11.50, RandomDie{sides=6})
+		King Arthur(health: 2.54, RandomDie{sides=6})
+		Isildur(health: 2.80, RandomDie{sides=6})
+		Lady Runaway(health: 10.07, RandomDie{sides=6})
+		Lady Munches(health: 5.79, RandomDie{sides=6})
+
+	Pit of Despair:
+
+
+	Sanctuary:
+		Beelzebub(health: 0.10, RandomDie{sides=6})
+		quartz
+
+	Den of Souls:
+		Lady Brienne(health: 6.16, RandomDie{sides=6})
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+Lady Munches moved from Dungeon to Pit of Despair
+King Arthur moved from Dungeon to Den of Souls
+Isildur moved from Dungeon to Pit of Despair
+Lady Runaway moved from Dungeon to Fangorn Forest
+Lady Munches moved from Dungeon to Pit of Despair
+Lady Munches moved from Pit of Despair to Room of Horrors
+Isildur moved from Pit of Despair to Dungeon
+Lady Munches moved from Pit of Despair to Room of Horrors
+Beelzebub moved from Sanctuary to Room of Horrors
+Beelzebub just died!
+Lady Brienne moved from Den of Souls to Dungeon
+King Arthur moved from Den of Souls to Room of Horrors
+Lady Runaway moved from Fangorn Forest to Map Room
+The game ended after 9 turns.
+The adventurers won! Left standing are: Lady Munches(health: 10.90, RandomDie{sides=6}), King Arthur(health: 1.94, RandomDie{sides=6}), Lady Munches(health: 5.19, RandomDie{sides=6}), Lady Brienne(health: 5.86, RandomDie{sides=6}), Isildur(health: 2.20, RandomDie{sides=6}), Lady Runaway(health: 9.47, RandomDie{sides=6})
+  When the game is played in the created maze               # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                     # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And all the adventurers or all of the creatures have died # polymorphia.stepdefs.PolymorphiaStepDefs.allTheAdventurersOrAllOfTheCreaturesHaveDied()
+
+Scenario: Fighting                                              # features/gamePlay.feature:38
+  Given a maze with the following rooms:                        # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting |
+  Given a knight Bilbo with health 5 and a fixed die roll of 4  # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bilbo is in the Starting room                             # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Goblin with health 3 and a fixed die roll of 2 # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Goblin is in the Starting room                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo is fighting Goblin(health: 3.00, FixedDie{2})
+Bilbo rolled 4
+Goblin(health: 3.00, FixedDie{2}) rolled 2
+  When Bilbo plays a turn                                       # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+Bilbo has health 4.45
+Expected health: 4.45
+  Then Bilbo has health 4.45                                    # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+Goblin has health 0.5
+Expected health: 0.5
+  And Goblin has health 0.5                                     # polymorphia.stepdefs.CharacterStepDefs.hasHealth(java.lang.String,double)
+
+Scenario: Play a game in a unidirectional, randomly-distributed maze               # features/gamePlay.feature:52
+  Given a unidirectional, randomly-distributed maze with the following attributes: # polymorphia.stepdefs.MazeStepDefs.connectedDistributedMazeWithTheFollowingAttributes(java.lang.String,java.lang.String,java.util.Map<java.lang.String, java.lang.Integer>)
+    | number of rooms                | 11 |
+    | number of connections per room | 3  |
+    | number of food items           | 10 |
+    | number of knights              | 3  |
+    | number of gluttons             | 2  |
+    | number of cowards              | 1  |
+    | number of creatures            | 5  |
+    | number of demons               | 2  |
+Starting play...
+Polymorphia MAZE: turn 0
+	Room of Horrors:
+		Aragorn(health: 10.00, RandomDie{sides=6})
+
+	Dungeon:
+		Lady Snacks(health: 6.00, RandomDie{sides=6})
+
+	Pit of Despair:
+		Dragon(health: 5.00, RandomDie{sides=6})
+		Orc(health: 5.00, RandomDie{sides=6})
+		banana(1.51)
+
+	Sanctuary:
+		King Arthur(health: 10.00, RandomDie{sides=6})
+
+	Den of Souls:
+		Sir Jamey(health: 10.00, RandomDie{sides=6})
+
+	Map Room:
+		sushi(1.93)
+		pizza(1.96)
+
+	Fangorn Forest:
+		sushi(1.28)
+		burrito(1.11)
+		rice(1.26)
+
+	Rivendell:
+		Ogre(health: 5.00, RandomDie{sides=6})
+		Evil Wizard(health: 5.00, RandomDie{sides=6})
+		pizza(1.10)
+		apple(1.82)
+		taco(1.30)
+
+	Misty Mountains:
+		Succubus(health: 15.00, RandomDie{sides=6})
+		Sir Chicken(health: 8.00, RandomDie{sides=6})
+
+	Mordor:
+		pizza(1.72)
+
+	Shire:
+		Sir Gobbles(health: 6.00, RandomDie{sides=6})
+		Troll(health: 5.00, RandomDie{sides=6})
+		Lucifer(health: 15.00, RandomDie{sides=6})
+Aragorn moved from Room of Horrors to Rivendell
+Lady Snacks moved from Dungeon to Mordor
+Dragon is fighting Orc(health: 5.00, RandomDie{sides=6})
+Dragon rolled 2
+Orc(health: 5.00, RandomDie{sides=6}) rolled 2
+Orc is fighting Dragon(health: 4.45, RandomDie{sides=6})
+Orc rolled 3
+Dragon(health: 4.45, RandomDie{sides=6}) rolled 2
+King Arthur moved from Sanctuary to Misty Mountains
+Sir Jamey moved from Den of Souls to Sanctuary
+Ogre is fighting Aragorn(health: 9.70, RandomDie{sides=6})
+Ogre rolled 1
+Aragorn(health: 9.70, RandomDie{sides=6}) rolled 5
+Aragorn is fighting Ogre(health: 0.45, RandomDie{sides=6})
+Aragorn rolled 2
+Ogre(health: 0.45, RandomDie{sides=6}) rolled 3
+Ogre just died!
+Evil Wizard is fighting Aragorn(health: 7.65, RandomDie{sides=6})
+Evil Wizard rolled 6
+Aragorn(health: 7.65, RandomDie{sides=6}) rolled 6
+King Arthur is fighting Succubus(health: 15.00, RandomDie{sides=6})
+King Arthur rolled 1
+Succubus(health: 15.00, RandomDie{sides=6}) rolled 1
+Succubus is fighting King Arthur(health: 9.15, RandomDie{sides=6})
+Succubus rolled 6
+King Arthur(health: 9.15, RandomDie{sides=6}) rolled 2
+Sir Chicken moved from Misty Mountains to Room of Horrors
+Sir Gobbles moved from Shire to Fangorn Forest
+Troll is fighting Lucifer(health: 15.00, RandomDie{sides=6})
+Troll rolled 2
+Lucifer(health: 15.00, RandomDie{sides=6}) rolled 1
+Lucifer is fighting Troll(health: 4.45, RandomDie{sides=6})
+Lucifer rolled 5
+Troll(health: 4.45, RandomDie{sides=6}) rolled 1
+Troll just died!
+Polymorphia MAZE: turn 1
+	Room of Horrors:
+		Sir Chicken(health: 7.70, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Dragon(health: 2.95, RandomDie{sides=6})
+		Orc(health: 3.95, RandomDie{sides=6})
+		banana(1.51)
+
+	Sanctuary:
+		Sir Jamey(health: 9.70, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+		sushi(1.93)
+		pizza(1.96)
+
+	Fangorn Forest:
+		Sir Gobbles(health: 5.70, RandomDie{sides=6})
+		sushi(1.28)
+		burrito(1.11)
+		rice(1.26)
+
+	Rivendell:
+		Aragorn(health: 7.15, RandomDie{sides=6})
+		Evil Wizard(health: 4.45, RandomDie{sides=6})
+		pizza(1.10)
+		apple(1.82)
+		taco(1.30)
+
+	Misty Mountains:
+		King Arthur(health: 4.65, RandomDie{sides=6})
+		Succubus(health: 13.95, RandomDie{sides=6})
+
+	Mordor:
+		Lady Snacks(health: 7.37, RandomDie{sides=6})
+
+	Shire:
+		Lucifer(health: 12.95, RandomDie{sides=6})
+Sir Chicken moved from Room of Horrors to Rivendell
+Dragon is fighting Orc(health: 3.95, RandomDie{sides=6})
+Dragon rolled 4
+Orc(health: 3.95, RandomDie{sides=6}) rolled 2
+Orc is fighting Dragon(health: 2.40, RandomDie{sides=6})
+Orc rolled 3
+Dragon(health: 2.40, RandomDie{sides=6}) rolled 1
+Dragon just died!
+Sir Jamey moved from Sanctuary to Dungeon
+Aragorn is fighting Evil Wizard(health: 4.45, RandomDie{sides=6})
+Aragorn rolled 6
+Evil Wizard(health: 4.45, RandomDie{sides=6}) rolled 1
+Evil Wizard just died!
+King Arthur is fighting Succubus(health: 13.95, RandomDie{sides=6})
+King Arthur rolled 4
+Succubus(health: 13.95, RandomDie{sides=6}) rolled 3
+Succubus is fighting King Arthur(health: 4.10, RandomDie{sides=6})
+Succubus rolled 3
+King Arthur(health: 4.10, RandomDie{sides=6}) rolled 3
+Lady Snacks moved from Mordor to Pit of Despair
+Lucifer moved from Shire to Fangorn Forest
+Polymorphia MAZE: turn 2
+	Room of Horrors:
+
+
+	Dungeon:
+		Sir Jamey(health: 9.40, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Snacks(health: 7.07, RandomDie{sides=6})
+		Orc(health: 0.90, RandomDie{sides=6})
+		banana(1.51)
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+		sushi(1.93)
+		pizza(1.96)
+
+	Fangorn Forest:
+		Sir Gobbles(health: 6.93, RandomDie{sides=6})
+		Lucifer(health: 12.65, RandomDie{sides=6})
+		burrito(1.11)
+		rice(1.26)
+
+	Rivendell:
+		Aragorn(health: 6.60, RandomDie{sides=6})
+		Sir Chicken(health: 8.45, RandomDie{sides=6})
+		apple(1.82)
+		taco(1.30)
+
+	Misty Mountains:
+		King Arthur(health: 3.60, RandomDie{sides=6})
+		Succubus(health: 11.90, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Sir Jamey moved from Dungeon to Mordor
+Orc is fighting Lady Snacks(health: 8.52, RandomDie{sides=6})
+Orc rolled 2
+Lady Snacks(health: 8.52, RandomDie{sides=6}) rolled 2
+Lucifer is fighting Sir Gobbles(health: 7.99, RandomDie{sides=6})
+Lucifer rolled 3
+Sir Gobbles(health: 7.99, RandomDie{sides=6}) rolled 1
+King Arthur is fighting Succubus(health: 11.90, RandomDie{sides=6})
+King Arthur rolled 6
+Succubus(health: 11.90, RandomDie{sides=6}) rolled 4
+Succubus is fighting King Arthur(health: 3.05, RandomDie{sides=6})
+Succubus rolled 3
+King Arthur(health: 3.05, RandomDie{sides=6}) rolled 6
+King Arthur is now a coward!
+Sir Jamey moved from Mordor to Pit of Despair
+Polymorphia MAZE: turn 3
+	Room of Horrors:
+
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Lady Snacks(health: 8.02, RandomDie{sides=6})
+		Orc(health: 0.35, RandomDie{sides=6})
+		Sir Jamey(health: 8.80, RandomDie{sides=6})
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+		sushi(1.93)
+		pizza(1.96)
+
+	Fangorn Forest:
+		Sir Gobbles(health: 5.49, RandomDie{sides=6})
+		Lucifer(health: 12.10, RandomDie{sides=6})
+		rice(1.26)
+
+	Rivendell:
+		Aragorn(health: 8.37, RandomDie{sides=6})
+		Sir Chicken(health: 9.70, RandomDie{sides=6})
+
+	Misty Mountains:
+		King Arthur(health: 2.55, RandomDie{sides=6})
+		Succubus(health: 5.85, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Lady Snacks moved from Pit of Despair to Map Room
+Orc is fighting Sir Jamey(health: 8.80, RandomDie{sides=6})
+Orc rolled 6
+Sir Jamey(health: 8.80, RandomDie{sides=6}) rolled 6
+Orc just died!
+Sir Jamey moved from Pit of Despair to Room of Horrors
+Lucifer is fighting Sir Gobbles(health: 6.70, RandomDie{sides=6})
+Lucifer rolled 6
+Sir Gobbles(health: 6.70, RandomDie{sides=6}) rolled 1
+Aragorn moved from Rivendell to Pit of Despair
+Sir Chicken moved from Rivendell to Mordor
+King Arthur moved from Misty Mountains to Room of Horrors
+Succubus moved from Misty Mountains to Sanctuary
+Sir Chicken moved from Mordor to Sanctuary
+Polymorphia MAZE: turn 4
+	Room of Horrors:
+		King Arthur(health: 2.25, RandomDie{sides=6})
+		Sir Jamey(health: 8.00, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Aragorn(health: 8.07, RandomDie{sides=6})
+
+	Sanctuary:
+		Succubus(health: 5.55, RandomDie{sides=6})
+		Sir Chicken(health: 9.10, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+		Lady Snacks(health: 9.60, RandomDie{sides=6})
+		pizza(1.96)
+
+	Fangorn Forest:
+		Sir Gobbles(health: 1.20, RandomDie{sides=6})
+		Lucifer(health: 11.55, RandomDie{sides=6})
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+King Arthur moved from Room of Horrors to Sanctuary
+Sir Jamey moved from Room of Horrors to Rivendell
+Aragorn moved from Pit of Despair to Map Room
+King Arthur moved from Sanctuary to Dungeon
+Succubus is fighting Sir Chicken(health: 9.10, RandomDie{sides=6})
+Succubus rolled 1
+Sir Chicken(health: 9.10, RandomDie{sides=6}) rolled 6
+Succubus just died!
+Sir Chicken moved from Sanctuary to Dungeon
+Aragorn moved from Map Room to Mordor
+Sir Gobbles moved from Fangorn Forest to Mordor
+Lucifer moved from Fangorn Forest to Pit of Despair
+Sir Jamey moved from Rivendell to Mordor
+Sir Gobbles moved from Mordor to Pit of Despair
+Aragorn moved from Mordor to Pit of Despair
+Sir Jamey moved from Mordor to Pit of Despair
+Polymorphia MAZE: turn 5
+	Room of Horrors:
+
+
+	Dungeon:
+		King Arthur(health: 1.65, RandomDie{sides=6})
+		Sir Chicken(health: 8.30, RandomDie{sides=6})
+
+	Pit of Despair:
+		Sir Gobbles(health: 0.60, RandomDie{sides=6})
+		Aragorn(health: 7.17, RandomDie{sides=6})
+		Lucifer(health: 11.25, RandomDie{sides=6})
+		Sir Jamey(health: 7.10, RandomDie{sides=6})
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+		Lady Snacks(health: 11.51, RandomDie{sides=6})
+
+	Fangorn Forest:
+
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+King Arthur moved from Dungeon to Map Room
+Sir Chicken moved from Dungeon to Map Room
+Sir Gobbles moved from Pit of Despair to Room of Horrors
+Aragorn is fighting Lucifer(health: 11.25, RandomDie{sides=6})
+Aragorn rolled 2
+Lucifer(health: 11.25, RandomDie{sides=6}) rolled 2
+Lucifer is fighting Aragorn(health: 6.62, RandomDie{sides=6})
+Lucifer rolled 5
+Aragorn(health: 6.62, RandomDie{sides=6}) rolled 2
+Sir Jamey is fighting Lucifer(health: 10.20, RandomDie{sides=6})
+Sir Jamey rolled 6
+Lucifer(health: 10.20, RandomDie{sides=6}) rolled 5
+Lady Snacks moved from Map Room to Mordor
+King Arthur moved from Map Room to Mordor
+Sir Chicken moved from Map Room to Mordor
+Lady Snacks moved from Mordor to Pit of Despair
+King Arthur moved from Mordor to Sanctuary
+Sir Chicken moved from Mordor to Sanctuary
+Polymorphia MAZE: turn 6
+	Room of Horrors:
+		Sir Gobbles(health: 0.30, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Lady Snacks(health: 10.91, RandomDie{sides=6})
+		Aragorn(health: 3.12, RandomDie{sides=6})
+		Lucifer(health: 8.70, RandomDie{sides=6})
+		Sir Jamey(health: 6.55, RandomDie{sides=6})
+
+	Sanctuary:
+		King Arthur(health: 0.75, RandomDie{sides=6})
+		Sir Chicken(health: 7.40, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Sir Gobbles moved from Room of Horrors to Rivendell
+Sir Gobbles just died!
+Lady Snacks moved from Pit of Despair to Map Room
+Aragorn is fighting Lucifer(health: 8.70, RandomDie{sides=6})
+Aragorn rolled 4
+Lucifer(health: 8.70, RandomDie{sides=6}) rolled 1
+Aragorn is now a coward!
+Lucifer is fighting Aragorn(health: 2.57, RandomDie{sides=6})
+Lucifer rolled 2
+Aragorn(health: 2.57, RandomDie{sides=6}) rolled 3
+Sir Jamey is fighting Lucifer(health: 3.65, RandomDie{sides=6})
+Sir Jamey rolled 6
+Lucifer(health: 3.65, RandomDie{sides=6}) rolled 1
+Lucifer just died!
+King Arthur moved from Sanctuary to Dungeon
+Sir Chicken moved from Sanctuary to Misty Mountains
+Lady Snacks moved from Map Room to Shire
+Sir Chicken moved from Misty Mountains to Room of Horrors
+Lady Snacks moved from Shire to Fangorn Forest
+The game ended after 7 turns.
+The adventurers won! Left standing are: Sir Chicken(health: 6.80, RandomDie{sides=6}), King Arthur(health: 0.45, RandomDie{sides=6}), Aragorn(health: 2.07, RandomDie{sides=6}), Sir Jamey(health: 6.00, RandomDie{sides=6}), Lady Snacks(health: 10.01, RandomDie{sides=6})
+  When the game is played in the created maze                                      # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                                            # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And all the adventurers or all of the creatures have died                        # polymorphia.stepdefs.PolymorphiaStepDefs.allTheAdventurersOrAllOfTheCreaturesHaveDied()
+
+Scenario: Play a game in a bidirectional, sequentially-distributed maze               # features/gamePlay.feature:68
+  Given a bidirectional, sequentially-distributed maze with the following attributes: # polymorphia.stepdefs.MazeStepDefs.connectedDistributedMazeWithTheFollowingAttributes(java.lang.String,java.lang.String,java.util.Map<java.lang.String, java.lang.Integer>)
+    | number of rooms                | 11 |
+    | number of connections per room | 3  |
+    | number of food items           | 10 |
+    | number of knights              | 3  |
+    | number of gluttons             | 2  |
+    | number of cowards              | 1  |
+    | number of creatures            | 5  |
+    | number of demons               | 2  |
+Starting play...
+Polymorphia MAZE: turn 0
+	Room of Horrors:
+		Troll(health: 5.00, RandomDie{sides=6})
+		sushi(1.26)
+
+	Dungeon:
+		King Arthur(health: 10.00, RandomDie{sides=6})
+		Succubus(health: 15.00, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lucifer(health: 15.00, RandomDie{sides=6})
+		Isildur(health: 10.00, RandomDie{sides=6})
+		muffin(1.20)
+
+	Sanctuary:
+		Lady Brienne(health: 10.00, RandomDie{sides=6})
+		bacon(1.56)
+
+	Den of Souls:
+		Sir Gobbles(health: 6.00, RandomDie{sides=6})
+		muffin(1.66)
+
+	Map Room:
+		Sir Eats-a-lot(health: 6.00, RandomDie{sides=6})
+		fries(1.95)
+
+	Fangorn Forest:
+		Sir Chicken(health: 8.00, RandomDie{sides=6})
+		pizza(1.40)
+
+	Rivendell:
+		Ogre(health: 5.00, RandomDie{sides=6})
+		donut(1.46)
+
+	Misty Mountains:
+		Dragon(health: 5.00, RandomDie{sides=6})
+		burrito(1.19)
+
+	Mordor:
+		Dragon(health: 5.00, RandomDie{sides=6})
+		bacon(1.74)
+
+	Shire:
+		Dragon(health: 5.00, RandomDie{sides=6})
+		burrito(1.64)
+Troll moved from Room of Horrors to Mordor
+King Arthur is fighting Succubus(health: 15.00, RandomDie{sides=6})
+King Arthur rolled 1
+Succubus(health: 15.00, RandomDie{sides=6}) rolled 6
+Succubus is fighting King Arthur(health: 4.45, RandomDie{sides=6})
+Succubus rolled 6
+King Arthur(health: 4.45, RandomDie{sides=6}) rolled 1
+King Arthur just died!
+Lucifer is fighting Isildur(health: 10.00, RandomDie{sides=6})
+Lucifer rolled 4
+Isildur(health: 10.00, RandomDie{sides=6}) rolled 3
+Isildur is fighting Lucifer(health: 14.45, RandomDie{sides=6})
+Isildur rolled 6
+Lucifer(health: 14.45, RandomDie{sides=6}) rolled 6
+Ogre moved from Rivendell to Map Room
+Dragon moved from Misty Mountains to Shire
+Dragon is fighting Troll(health: 4.70, RandomDie{sides=6})
+Dragon rolled 6
+Troll(health: 4.70, RandomDie{sides=6}) rolled 5
+Troll is fighting Dragon(health: 4.45, RandomDie{sides=6})
+Troll rolled 2
+Dragon(health: 4.45, RandomDie{sides=6}) rolled 4
+Dragon is fighting Dragon(health: 5.00, RandomDie{sides=6})
+Dragon rolled 1
+Dragon(health: 5.00, RandomDie{sides=6}) rolled 4
+Dragon is fighting Dragon(health: 1.15, RandomDie{sides=6})
+Dragon rolled 1
+Dragon(health: 1.15, RandomDie{sides=6}) rolled 1
+Polymorphia MAZE: turn 1
+	Room of Horrors:
+		sushi(1.26)
+
+	Dungeon:
+		Succubus(health: 13.95, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lucifer(health: 13.95, RandomDie{sides=6})
+		Isildur(health: 7.95, RandomDie{sides=6})
+		muffin(1.20)
+
+	Sanctuary:
+		Lady Brienne(health: 11.51, RandomDie{sides=6})
+
+	Den of Souls:
+		Sir Gobbles(health: 7.61, RandomDie{sides=6})
+
+	Map Room:
+		Sir Eats-a-lot(health: 7.90, RandomDie{sides=6})
+		Ogre(health: 4.70, RandomDie{sides=6})
+
+	Fangorn Forest:
+		Sir Chicken(health: 9.35, RandomDie{sides=6})
+
+	Rivendell:
+		donut(1.46)
+
+	Misty Mountains:
+		burrito(1.19)
+
+	Mordor:
+		Dragon(health: 3.95, RandomDie{sides=6})
+		Troll(health: 0.65, RandomDie{sides=6})
+		bacon(1.74)
+
+	Shire:
+		Dragon(health: 0.65, RandomDie{sides=6})
+		Dragon(health: 3.95, RandomDie{sides=6})
+		burrito(1.64)
+Succubus moved from Dungeon to Room of Horrors
+Lucifer is fighting Isildur(health: 7.95, RandomDie{sides=6})
+Lucifer rolled 1
+Isildur(health: 7.95, RandomDie{sides=6}) rolled 5
+Isildur is fighting Lucifer(health: 9.40, RandomDie{sides=6})
+Isildur rolled 1
+Lucifer(health: 9.40, RandomDie{sides=6}) rolled 4
+Lady Brienne moved from Sanctuary to Dungeon
+Sir Gobbles moved from Den of Souls to Fangorn Forest
+Sir Eats-a-lot moved from Map Room to Rivendell
+Ogre moved from Map Room to Rivendell
+Sir Gobbles moved from Fangorn Forest to Misty Mountains
+Sir Chicken moved from Fangorn Forest to Misty Mountains
+Ogre is fighting Sir Eats-a-lot(health: 9.01, RandomDie{sides=6})
+Ogre rolled 5
+Sir Eats-a-lot(health: 9.01, RandomDie{sides=6}) rolled 3
+Sir Chicken moved from Misty Mountains to Fangorn Forest
+Dragon is fighting Troll(health: 0.65, RandomDie{sides=6})
+Dragon rolled 6
+Troll(health: 0.65, RandomDie{sides=6}) rolled 6
+Troll is fighting Dragon(health: 3.40, RandomDie{sides=6})
+Troll rolled 6
+Dragon(health: 3.40, RandomDie{sides=6}) rolled 2
+Dragon just died!
+Troll just died!
+Dragon is fighting Dragon(health: 3.95, RandomDie{sides=6})
+Dragon rolled 6
+Dragon(health: 3.95, RandomDie{sides=6}) rolled 3
+Dragon is fighting Dragon(health: 0.10, RandomDie{sides=6})
+Dragon rolled 2
+Dragon(health: 0.10, RandomDie{sides=6}) rolled 1
+Dragon just died!
+Dragon just died!
+Polymorphia MAZE: turn 2
+	Room of Horrors:
+		Succubus(health: 13.65, RandomDie{sides=6})
+		sushi(1.26)
+
+	Dungeon:
+		Lady Brienne(health: 11.21, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lucifer(health: 8.90, RandomDie{sides=6})
+		Isildur(health: 3.90, RandomDie{sides=6})
+		muffin(1.20)
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+		Sir Chicken(health: 8.75, RandomDie{sides=6})
+
+	Rivendell:
+		Sir Eats-a-lot(health: 6.51, RandomDie{sides=6})
+		Ogre(health: 3.85, RandomDie{sides=6})
+
+	Misty Mountains:
+		Sir Gobbles(health: 8.14, RandomDie{sides=6})
+
+	Mordor:
+		bacon(1.74)
+
+	Shire:
+		burrito(1.64)
+Succubus moved from Room of Horrors to Mordor
+Lady Brienne moved from Dungeon to Shire
+Lucifer is fighting Isildur(health: 3.90, RandomDie{sides=6})
+Lucifer rolled 3
+Isildur(health: 3.90, RandomDie{sides=6}) rolled 6
+Isildur is fighting Lucifer(health: 5.35, RandomDie{sides=6})
+Isildur rolled 2
+Lucifer(health: 5.35, RandomDie{sides=6}) rolled 1
+Isildur is now a coward!
+Sir Chicken moved from Fangorn Forest to Den of Souls
+Sir Eats-a-lot moved from Rivendell to Mordor
+Ogre moved from Rivendell to Map Room
+Sir Gobbles moved from Misty Mountains to Fangorn Forest
+Succubus is fighting Sir Eats-a-lot(health: 7.90, RandomDie{sides=6})
+Succubus rolled 4
+Sir Eats-a-lot(health: 7.90, RandomDie{sides=6}) rolled 6
+Polymorphia MAZE: turn 3
+	Room of Horrors:
+		sushi(1.26)
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Lucifer(health: 3.85, RandomDie{sides=6})
+		Isildur(health: 2.85, RandomDie{sides=6})
+		muffin(1.20)
+
+	Sanctuary:
+
+
+	Den of Souls:
+		Sir Chicken(health: 8.45, RandomDie{sides=6})
+
+	Map Room:
+		Ogre(health: 3.55, RandomDie{sides=6})
+
+	Fangorn Forest:
+		Sir Gobbles(health: 7.84, RandomDie{sides=6})
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+		Sir Eats-a-lot(health: 7.40, RandomDie{sides=6})
+		Succubus(health: 10.80, RandomDie{sides=6})
+
+	Shire:
+		Lady Brienne(health: 12.50, RandomDie{sides=6})
+Lucifer is fighting Isildur(health: 2.85, RandomDie{sides=6})
+Lucifer rolled 1
+Isildur(health: 2.85, RandomDie{sides=6}) rolled 4
+Isildur moved from Pit of Despair to Den of Souls
+Sir Chicken moved from Den of Souls to Pit of Despair
+Isildur moved from Den of Souls to Fangorn Forest
+Ogre moved from Map Room to Sanctuary
+Sir Gobbles moved from Fangorn Forest to Misty Mountains
+Isildur moved from Fangorn Forest to Misty Mountains
+Sir Gobbles moved from Misty Mountains to Shire
+Isildur moved from Misty Mountains to Shire
+Sir Eats-a-lot moved from Mordor to Rivendell
+Succubus moved from Mordor to Room of Horrors
+Lady Brienne moved from Shire to Misty Mountains
+Sir Gobbles moved from Shire to Dungeon
+Isildur moved from Shire to Dungeon
+Polymorphia MAZE: turn 4
+	Room of Horrors:
+		Succubus(health: 10.50, RandomDie{sides=6})
+		sushi(1.26)
+
+	Dungeon:
+		Sir Gobbles(health: 6.94, RandomDie{sides=6})
+		Isildur(health: 0.85, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lucifer(health: 0.30, RandomDie{sides=6})
+		Sir Chicken(health: 8.15, RandomDie{sides=6})
+		muffin(1.20)
+
+	Sanctuary:
+		Ogre(health: 3.25, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Sir Eats-a-lot(health: 7.10, RandomDie{sides=6})
+
+	Misty Mountains:
+		Lady Brienne(health: 12.20, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Succubus moved from Room of Horrors to Mordor
+Sir Gobbles moved from Dungeon to Room of Horrors
+Isildur moved from Dungeon to Sanctuary
+Lucifer is fighting Sir Chicken(health: 8.15, RandomDie{sides=6})
+Lucifer rolled 1
+Sir Chicken(health: 8.15, RandomDie{sides=6}) rolled 2
+Lucifer just died!
+Ogre is fighting Isildur(health: 0.55, RandomDie{sides=6})
+Ogre rolled 3
+Isildur(health: 0.55, RandomDie{sides=6}) rolled 3
+Isildur moved from Sanctuary to Dungeon
+Isildur just died!
+Sir Eats-a-lot moved from Rivendell to Mordor
+Lady Brienne moved from Misty Mountains to Shire
+Sir Eats-a-lot moved from Mordor to Rivendell
+Succubus moved from Mordor to Rivendell
+Lady Brienne moved from Shire to Misty Mountains
+Polymorphia MAZE: turn 5
+	Room of Horrors:
+		Sir Gobbles(health: 6.64, RandomDie{sides=6})
+		sushi(1.26)
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Sir Chicken(health: 8.80, RandomDie{sides=6})
+
+	Sanctuary:
+		Ogre(health: 2.70, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Sir Eats-a-lot(health: 6.50, RandomDie{sides=6})
+		Succubus(health: 9.90, RandomDie{sides=6})
+
+	Misty Mountains:
+		Lady Brienne(health: 11.60, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Sir Chicken moved from Pit of Despair to Den of Souls
+Ogre moved from Sanctuary to Dungeon
+Sir Chicken moved from Den of Souls to Fangorn Forest
+Sir Chicken moved from Fangorn Forest to Den of Souls
+Sir Eats-a-lot moved from Rivendell to Map Room
+Succubus moved from Rivendell to Mordor
+Lady Brienne moved from Misty Mountains to Shire
+Succubus moved from Mordor to Rivendell
+Lady Brienne moved from Shire to Misty Mountains
+Polymorphia MAZE: turn 6
+	Room of Horrors:
+		Sir Gobbles(health: 7.85, RandomDie{sides=6})
+
+	Dungeon:
+		Ogre(health: 2.40, RandomDie{sides=6})
+
+	Pit of Despair:
+
+
+	Sanctuary:
+
+
+	Den of Souls:
+		Sir Chicken(health: 7.90, RandomDie{sides=6})
+
+	Map Room:
+		Sir Eats-a-lot(health: 6.20, RandomDie{sides=6})
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Succubus(health: 9.30, RandomDie{sides=6})
+
+	Misty Mountains:
+		Lady Brienne(health: 11.00, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Sir Gobbles moved from Room of Horrors to Pit of Despair
+Ogre moved from Dungeon to Room of Horrors
+Sir Gobbles moved from Pit of Despair to Room of Horrors
+Sir Chicken moved from Den of Souls to Pit of Despair
+Sir Eats-a-lot moved from Map Room to Sanctuary
+Succubus moved from Rivendell to Mordor
+Lady Brienne moved from Misty Mountains to Shire
+Succubus moved from Mordor to Rivendell
+Lady Brienne moved from Shire to Dungeon
+Polymorphia MAZE: turn 7
+	Room of Horrors:
+		Ogre(health: 2.10, RandomDie{sides=6})
+		Sir Gobbles(health: 7.25, RandomDie{sides=6})
+
+	Dungeon:
+		Lady Brienne(health: 10.40, RandomDie{sides=6})
+
+	Pit of Despair:
+		Sir Chicken(health: 7.60, RandomDie{sides=6})
+
+	Sanctuary:
+		Sir Eats-a-lot(health: 5.90, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Succubus(health: 8.70, RandomDie{sides=6})
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Ogre is fighting Sir Gobbles(health: 7.25, RandomDie{sides=6})
+Ogre rolled 1
+Sir Gobbles(health: 7.25, RandomDie{sides=6}) rolled 4
+Ogre just died!
+Sir Gobbles is no longer a coward, but a fighter
+Sir Gobbles moved from Room of Horrors to Pit of Despair
+Lady Brienne moved from Dungeon to Shire
+Sir Gobbles moved from Pit of Despair to Room of Horrors
+Sir Chicken moved from Pit of Despair to Den of Souls
+Sir Eats-a-lot moved from Sanctuary to Map Room
+Sir Chicken moved from Den of Souls to Fangorn Forest
+Sir Eats-a-lot moved from Map Room to Rivendell
+Sir Chicken moved from Fangorn Forest to Den of Souls
+Sir Eats-a-lot moved from Rivendell to Mordor
+Succubus moved from Rivendell to Mordor
+Sir Eats-a-lot moved from Mordor to Room of Horrors
+Succubus moved from Mordor to Room of Horrors
+Lady Brienne moved from Shire to Misty Mountains
+Polymorphia MAZE: turn 8
+	Room of Horrors:
+		Sir Eats-a-lot(health: 4.70, RandomDie{sides=6})
+		Sir Gobbles(health: 6.15, RandomDie{sides=6})
+		Succubus(health: 8.10, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+
+
+	Sanctuary:
+
+
+	Den of Souls:
+		Sir Chicken(health: 6.70, RandomDie{sides=6})
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+
+
+	Misty Mountains:
+		Lady Brienne(health: 9.80, RandomDie{sides=6})
+
+	Mordor:
+
+
+	Shire:
+
+Sir Eats-a-lot moved from Room of Horrors to Dungeon
+Sir Gobbles is fighting Succubus(health: 8.10, RandomDie{sides=6})
+Sir Gobbles rolled 3
+Succubus(health: 8.10, RandomDie{sides=6}) rolled 2
+Succubus is fighting Sir Gobbles(health: 5.60, RandomDie{sides=6})
+Succubus rolled 2
+Sir Gobbles(health: 5.60, RandomDie{sides=6}) rolled 1
+Sir Eats-a-lot moved from Dungeon to Sanctuary
+Sir Eats-a-lot moved from Sanctuary to Map Room
+Sir Chicken moved from Den of Souls to Pit of Despair
+Sir Eats-a-lot moved from Map Room to Sanctuary
+Lady Brienne moved from Misty Mountains to Fangorn Forest
+Polymorphia MAZE: turn 9
+	Room of Horrors:
+		Sir Gobbles(health: 4.10, RandomDie{sides=6})
+		Succubus(health: 6.05, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Sir Chicken(health: 6.40, RandomDie{sides=6})
+
+	Sanctuary:
+		Sir Eats-a-lot(health: 3.50, RandomDie{sides=6})
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+		Lady Brienne(health: 9.50, RandomDie{sides=6})
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Sir Gobbles is fighting Succubus(health: 6.05, RandomDie{sides=6})
+Sir Gobbles rolled 1
+Succubus(health: 6.05, RandomDie{sides=6}) rolled 4
+Sir Gobbles is now a coward!
+Succubus is fighting Sir Gobbles(health: 0.55, RandomDie{sides=6})
+Succubus rolled 5
+Sir Gobbles(health: 0.55, RandomDie{sides=6}) rolled 2
+Sir Gobbles just died!
+Sir Chicken moved from Pit of Despair to Den of Souls
+Sir Eats-a-lot moved from Sanctuary to Dungeon
+Sir Chicken moved from Den of Souls to Fangorn Forest
+Lady Brienne moved from Fangorn Forest to Den of Souls
+Sir Chicken moved from Fangorn Forest to Den of Souls
+Polymorphia MAZE: turn 10
+	Room of Horrors:
+		Succubus(health: 5.00, RandomDie{sides=6})
+
+	Dungeon:
+		Sir Eats-a-lot(health: 3.20, RandomDie{sides=6})
+
+	Pit of Despair:
+
+
+	Sanctuary:
+
+
+	Den of Souls:
+		Lady Brienne(health: 9.20, RandomDie{sides=6})
+		Sir Chicken(health: 5.50, RandomDie{sides=6})
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Succubus moved from Room of Horrors to Dungeon
+Sir Eats-a-lot moved from Dungeon to Shire
+Succubus moved from Dungeon to Room of Horrors
+Lady Brienne moved from Den of Souls to Pit of Despair
+Sir Chicken moved from Den of Souls to Pit of Despair
+Sir Eats-a-lot moved from Shire to Dungeon
+Polymorphia MAZE: turn 11
+	Room of Horrors:
+		Succubus(health: 4.40, RandomDie{sides=6})
+
+	Dungeon:
+		Sir Eats-a-lot(health: 2.60, RandomDie{sides=6})
+
+	Pit of Despair:
+		Lady Brienne(health: 8.90, RandomDie{sides=6})
+		Sir Chicken(health: 5.20, RandomDie{sides=6})
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Succubus moved from Room of Horrors to Mordor
+Sir Eats-a-lot moved from Dungeon to Sanctuary
+Lady Brienne moved from Pit of Despair to Den of Souls
+Sir Chicken moved from Pit of Despair to Room of Horrors
+Sir Eats-a-lot moved from Sanctuary to Map Room
+Lady Brienne moved from Den of Souls to Pit of Despair
+Sir Eats-a-lot moved from Map Room to Rivendell
+Sir Eats-a-lot moved from Rivendell to Mordor
+Sir Eats-a-lot moved from Mordor to Room of Horrors
+Succubus moved from Mordor to Rivendell
+Polymorphia MAZE: turn 12
+	Room of Horrors:
+		Sir Eats-a-lot(health: 1.10, RandomDie{sides=6})
+		Sir Chicken(health: 4.90, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+		Lady Brienne(health: 8.30, RandomDie{sides=6})
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Succubus(health: 3.80, RandomDie{sides=6})
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Sir Eats-a-lot moved from Room of Horrors to Pit of Despair
+Sir Chicken moved from Room of Horrors to Dungeon
+Sir Chicken moved from Dungeon to Room of Horrors
+Sir Eats-a-lot moved from Pit of Despair to Room of Horrors
+Lady Brienne moved from Pit of Despair to Room of Horrors
+Succubus moved from Rivendell to Mordor
+Succubus moved from Mordor to Rivendell
+Polymorphia MAZE: turn 13
+	Room of Horrors:
+		Sir Eats-a-lot(health: 0.50, RandomDie{sides=6})
+		Lady Brienne(health: 8.00, RandomDie{sides=6})
+		Sir Chicken(health: 4.30, RandomDie{sides=6})
+
+	Dungeon:
+
+
+	Pit of Despair:
+
+
+	Sanctuary:
+
+
+	Den of Souls:
+
+
+	Map Room:
+
+
+	Fangorn Forest:
+
+
+	Rivendell:
+		Succubus(health: 3.20, RandomDie{sides=6})
+
+	Misty Mountains:
+
+
+	Mordor:
+
+
+	Shire:
+
+Sir Eats-a-lot moved from Room of Horrors to Pit of Despair
+Lady Brienne moved from Room of Horrors to Mordor
+Sir Chicken moved from Room of Horrors to Dungeon
+Sir Chicken moved from Dungeon to Room of Horrors
+Sir Eats-a-lot moved from Pit of Despair to Room of Horrors
+Sir Eats-a-lot just died!
+Succubus moved from Rivendell to Mordor
+Lady Brienne is fighting Succubus(health: 2.90, RandomDie{sides=6})
+Lady Brienne rolled 4
+Succubus(health: 2.90, RandomDie{sides=6}) rolled 2
+Succubus is fighting Lady Brienne(health: 7.15, RandomDie{sides=6})
+Succubus rolled 5
+Lady Brienne(health: 7.15, RandomDie{sides=6}) rolled 3
+Succubus just died!
+The game ended after 14 turns.
+The adventurers won! Left standing are: Sir Chicken(health: 3.70, RandomDie{sides=6}), Lady Brienne(health: 4.65, RandomDie{sides=6})
+  When the game is played in the created maze                                         # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                                               # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And all the adventurers or all of the creatures have died                           # polymorphia.stepdefs.PolymorphiaStepDefs.allTheAdventurersOrAllOfTheCreaturesHaveDied()
+
+Scenario: Three deaths have occured                                # features/gamePlay.feature:84
+  Given a maze with the following rooms:                           # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingRooms(java.util.List<java.lang.String>)
+    | Starting |
+  And a knight Bruh with health 100 and a fixed die roll of 6      # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bruh is in the Starting room                                 # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Creature1 with health 1 and a fixed die roll of 1 # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Creature1 is in the Starting room                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Creature2 with health 1 and a fixed die roll of 1 # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Creature2 is in the Starting room                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature Creature3 with health 1 and a fixed die roll of 1 # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Creature3 is in the Starting room                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Starting play...
+Polymorphia MAZE: turn 0
+	Starting:
+		Creature1(health: 1.00, FixedDie{1})
+		Creature3(health: 1.00, FixedDie{1})
+		Creature2(health: 1.00, FixedDie{1})
+		Bruh(health: 100.00, FixedDie{6})
+Creature1 is fighting Creature3(health: 1.00, FixedDie{1})
+Creature1 rolled 1
+Creature3(health: 1.00, FixedDie{1}) rolled 1
+Creature3 is fighting Creature1(health: 0.45, FixedDie{1})
+Creature3 rolled 1
+Creature1(health: 0.45, FixedDie{1}) rolled 1
+Creature3 just died!
+Creature1 just died!
+Creature2 is fighting Bruh(health: 100.00, FixedDie{6})
+Creature2 rolled 1
+Bruh(health: 100.00, FixedDie{6}) rolled 6
+Creature2 just died!
+The game ended after 1 turns.
+The adventurers won! Left standing are: Bruh(health: 99.45, FixedDie{6})
+  When the game is played in the created maze                      # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                            # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And 3 deaths occured                                             # polymorphia.stepdefs.PolymorphiaStepDefs.deathsHaveOccured(int)
+
+Scenario: A Seeker will always enter a room it hasn't visited given a choice # features/seekingTreasure.feature:6
+  Given a maze with the following rooms and neighbors:                       # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room     | Neighbors |
+    | Starting | Next1     |
+    | Next1    | Next2     |
+    | Next2    | Next3     |
+    | Next3    | Finish    |
+  And a seeker named Bilbo in the Starting room                              # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo looking for treasure in room Starting
+Bilbo moved from Starting to Next1
+  When Bilbo plays a turn                                                    # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Next1 room                                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Next1
+Bilbo looking for treasure in room Next1
+Bilbo moved from Next1 to Next2
+  When Bilbo plays a turn                                                    # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Next2 room                                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Next2
+Bilbo looking for treasure in room Next2
+Bilbo moved from Next2 to Next3
+  When Bilbo plays a turn                                                    # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Next3 room                                            # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Next3
+Bilbo looking for treasure in room Next3
+Bilbo moved from Next3 to Finish
+  When Bilbo plays a turn                                                    # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is in the Finish room                                           # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+
+Scenario: A Seeker will find the treasure in a directed way, not a random way # features/seekingTreasure.feature:28
+  Given a maze with the following rooms and neighbors:                        # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room         | Neighbors          |
+    | Starting     | Intermediate       |
+    | Intermediate | Starting, Treasure |
+    | Treasure     | Intermediate       |
+  And a seeker Bilbo with health 5.0 and a fixed die roll of 6                # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And Bilbo is in the Starting room                                           # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a creature named Orc in the Intermediate room                           # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And a guard BlackKnight with health 2.0 and a fixed die roll of 1           # polymorphia.stepdefs.CharacterStepDefs.createCharacter(java.lang.String,java.lang.String,double,int)
+  And BlackKnight is in the Treasure room                                     # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a treasure is hidden in Treasure room                                   # polymorphia.stepdefs.MazeStepDefs.treasureIsHiddenInRoom(java.lang.String)
+Character Bilbo is doing their turn in room Starting
+Bilbo looking for treasure in room Starting
+Bilbo moved from Starting to Intermediate
+  When Bilbo plays a turn                                                     # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is now in the Intermediate room                                  # polymorphia.stepdefs.MazeStepDefs.characterIsInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Intermediate
+Bilbo looking for treasure in room Intermediate
+Bilbo moved from Intermediate to Treasure
+  When Bilbo plays a turn                                                     # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is now in the Treasure room                                      # polymorphia.stepdefs.MazeStepDefs.characterIsInRoom(java.lang.String,java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Treasure
+Bilbo looking for treasure in room Treasure
+Bilbo is fighting BlackKnight(health: 2.00, FixedDie{1})
+Bilbo rolled 6
+BlackKnight(health: 2.00, FixedDie{1}) rolled 1
+BlackKnight just died!
+  When Bilbo plays a turn                                                     # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is still in the Treasure room                                    # polymorphia.stepdefs.MazeStepDefs.characterIsStillInTheRoom(java.lang.String,java.lang.String)
+Character Bilbo is doing their turn in room Treasure
+Bilbo looking for treasure in room Treasure
+Bilbo found the treasure in room Treasure!
+  When Bilbo plays a turn                                                     # polymorphia.stepdefs.PolymorphiaStepDefs.characterPlaysATurn(java.lang.String)
+  Then Bilbo is still in the Treasure room                                    # polymorphia.stepdefs.MazeStepDefs.characterIsStillInTheRoom(java.lang.String,java.lang.String)
+  And Bilbo has found the treasure                                            # polymorphia.stepdefs.CharacterStepDefs.characterHasFoundTheTreasure(java.lang.String)
+  Then the game is over                                                       # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
+  And Bilbo is still alive                                                    # polymorphia.stepdefs.CharacterStepDefs.characterIsStillAlive(java.lang.String)
+
+@treasureHunt
+Scenario: Play the guarded treasure maze               # features/treasureHunt.feature:4
+  Given a maze with the following rooms and neighbors: # polymorphia.stepdefs.MazeStepDefs.aMazeWithTheFollowingFooms(java.util.List<java.util.Map<java.lang.String, java.lang.String>>)
+    | Room     | Neighbors        |
+    | Starting | B, C, D, E, F, G |
+    | F        | Map              |
+    | C        | J                |
+    | J        | I                |
+    | I        | K, L, M          |
+    | L        | N, O             |
+    | N        | Treasure         |
+    | O        | P                |
+  And a seeker Seeker with health 5.0                  # polymorphia.stepdefs.CharacterStepDefs.createCharacterWithHealth(java.lang.String,java.lang.String,double)
+  And a coward Coward with health 5.0                  # polymorphia.stepdefs.CharacterStepDefs.createCharacterWithHealth(java.lang.String,java.lang.String,double)
+  And Seeker is in the Starting room                   # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And Coward is in the Starting room                   # polymorphia.stepdefs.MazeStepDefs.characterIsInTheRoom(java.lang.String,java.lang.String)
+  And a guard named Guard in the Treasure room         # polymorphia.stepdefs.MazeStepDefs.createCharacterAndPutInRoom(java.lang.String,java.lang.String,java.lang.String)
+  And a treasure is hidden in Treasure room            # polymorphia.stepdefs.MazeStepDefs.treasureIsHiddenInRoom(java.lang.String)
+  And a treasure map is hidden in Map room             # polymorphia.stepdefs.MazeStepDefs.treasureMapIsHiddenInRoom(java.lang.String)
+  And the maze has the following attributes:           # polymorphia.stepdefs.MazeStepDefs.addToRooms(java.util.Map<java.lang.String, java.lang.Integer>)
+    | number of food items | 15 |
+Starting play...
+Polymorphia MAZE: turn 0
+	Starting:
+		Coward(health: 5.00, RandomDie{sides=6})
+		Seeker(health: 5.00, RandomDie{sides=6})
+		donut(1.95)
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+		apple(1.98)
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+		donut(1.48)
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 5.00, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Seeker looking for treasure in room Starting
+Seeker moved from Starting to D
+Seeker looking for treasure in room D
+Seeker moved from D to Starting
+Polymorphia MAZE: turn 1
+	Starting:
+		Coward(health: 6.90, RandomDie{sides=6})
+		Seeker(health: 4.40, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+		apple(1.98)
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+		donut(1.48)
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.95, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Coward moved from Starting to F
+Seeker looking for treasure in room Starting
+Seeker moved from Starting to E
+Seeker looking for treasure in room E
+Seeker moved from E to Starting
+Polymorphia MAZE: turn 2
+	Starting:
+		Seeker(health: 3.80, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+		Coward(health: 8.52, RandomDie{sides=6})
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+		donut(1.48)
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.90, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Seeker looking for treasure in room Starting
+Seeker moved from Starting to G
+Coward moved from F to Starting
+Seeker looking for treasure in room G
+Seeker moved from G to Starting
+Polymorphia MAZE: turn 3
+	Starting:
+		Coward(health: 8.22, RandomDie{sides=6})
+		Seeker(health: 3.20, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+		donut(1.48)
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.85, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Coward moved from Starting to G
+Seeker looking for treasure in room Starting
+Seeker moved from Starting to C
+Seeker looking for treasure in room C
+Seeker moved from C to J
+Coward moved from G to Starting
+Seeker looking for treasure in room J
+Seeker moved from J to I
+Seeker looking for treasure in room I
+Seeker moved from I to M
+Seeker ate donut in room M
+Polymorphia MAZE: turn 4
+	Starting:
+		Coward(health: 7.62, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+		Seeker(health: 3.43, RandomDie{sides=6})
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.80, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Coward moved from Starting to G
+Coward moved from G to Starting
+Seeker looking for treasure in room M
+Seeker moved from M to I
+Polymorphia MAZE: turn 5
+	Starting:
+		Coward(health: 7.02, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		apple(1.75)
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+		Seeker(health: 3.13, RandomDie{sides=6})
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.75, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Coward moved from Starting to D
+Seeker looking for treasure in room I
+Seeker moved from I to K
+Seeker looking for treasure in room K
+Seeker moved from K to I
+Polymorphia MAZE: turn 6
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		Coward(health: 8.42, RandomDie{sides=6})
+		steak(2.00)
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+		Seeker(health: 2.53, RandomDie{sides=6})
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.70, RandomDie{sides=6})
+		emerald
+
+	P:
+		banana(1.74)
+		pizza(1.51)
+Seeker looking for treasure in room I
+Seeker moved from I to L
+Seeker looking for treasure in room L
+Seeker moved from L to O
+Seeker looking for treasure in room O
+Seeker moved from O to P
+Seeker ate banana in room P
+Polymorphia MAZE: turn 7
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+		Coward(health: 10.37, RandomDie{sides=6})
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.65, RandomDie{sides=6})
+		emerald
+
+	P:
+		Seeker(health: 3.32, RandomDie{sides=6})
+		pizza(1.51)
+Coward moved from D to Starting
+Seeker looking for treasure in room P
+Seeker moved from P to O
+Polymorphia MAZE: turn 8
+	Starting:
+		Coward(health: 10.07, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+		muffin(1.83)
+
+	O:
+		Seeker(health: 3.02, RandomDie{sides=6})
+
+	Treasure:
+		Guard(health: 4.60, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Coward moved from Starting to F
+Coward moved from F to Starting
+Seeker looking for treasure in room O
+Seeker moved from O to L
+Polymorphia MAZE: turn 9
+	Starting:
+		Coward(health: 9.47, RandomDie{sides=6})
+
+	B:
+		steak(1.51)
+
+	C:
+		pizza(1.43)
+		bacon(1.38)
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+		Seeker(health: 2.72, RandomDie{sides=6})
+
+	M:
+
+
+	N:
+		muffin(1.83)
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.55, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Coward moved from Starting to C
+Seeker looking for treasure in room L
+Seeker moved from L to N
+Seeker ate muffin in room N
+Polymorphia MAZE: turn 10
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+		Coward(health: 10.55, RandomDie{sides=6})
+		bacon(1.38)
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+		Seeker(health: 4.20, RandomDie{sides=6})
+
+	O:
+
+
+	Treasure:
+		Guard(health: 4.50, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Seeker looking for treasure in room N
+Seeker moved from N to Treasure
+Seeker looking for treasure in room Treasure
+Seeker is fighting Guard(health: 4.45, RandomDie{sides=6})
+Seeker rolled 2
+Guard(health: 4.45, RandomDie{sides=6}) rolled 3
+Polymorphia MAZE: turn 11
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+		Coward(health: 11.89, RandomDie{sides=6})
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		taco(1.88)
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+
+
+	O:
+
+
+	Treasure:
+		Guard(health: 3.95, RandomDie{sides=6})
+		Seeker(health: 2.35, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Coward moved from C to J
+Seeker looking for treasure in room Treasure
+Seeker is fighting Guard(health: 3.90, RandomDie{sides=6})
+Seeker rolled 4
+Guard(health: 3.90, RandomDie{sides=6}) rolled 2
+Polymorphia MAZE: turn 12
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+		Coward(health: 13.42, RandomDie{sides=6})
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+
+
+	O:
+
+
+	Treasure:
+		Guard(health: 1.40, RandomDie{sides=6})
+		Seeker(health: 1.80, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Coward moved from J to C
+Seeker looking for treasure in room Treasure
+Seeker is fighting Guard(health: 1.35, RandomDie{sides=6})
+Seeker rolled 4
+Guard(health: 1.35, RandomDie{sides=6}) rolled 4
+Polymorphia MAZE: turn 13
+	Starting:
+
+
+	B:
+		steak(1.51)
+
+	C:
+		Coward(health: 13.12, RandomDie{sides=6})
+
+	D:
+
+
+	E:
+		burrito(2.00)
+
+	F:
+
+
+	G:
+
+
+	Map:
+		TreasureMap
+		chicken(1.40)
+
+	J:
+
+
+	I:
+
+
+	K:
+		burger(1.52)
+
+	L:
+
+
+	M:
+
+
+	N:
+
+
+	O:
+
+
+	Treasure:
+		Guard(health: 0.85, RandomDie{sides=6})
+		Seeker(health: 1.25, RandomDie{sides=6})
+		emerald
+
+	P:
+		pizza(1.51)
+Coward moved from C to Starting
+Seeker looking for treasure in room Treasure
+Seeker is fighting Guard(health: 0.80, RandomDie{sides=6})
+Seeker rolled 6
+Guard(health: 0.80, RandomDie{sides=6}) rolled 1
+Guard just died!
+The game ended after 14 turns.
+The adventurers won! Left standing are: Coward(health: 12.82, RandomDie{sides=6}), Seeker(health: 0.70, RandomDie{sides=6})
+  When the game is played in the created maze          # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsPlayedInTheCreatedMaze()
+  Then the game is over                                # polymorphia.stepdefs.PolymorphiaStepDefs.theGameIsOver()
