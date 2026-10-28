@@ -9,7 +9,14 @@ public class NormalBoard extends Board {
 
     @Override
     protected boolean isValid(String guess) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isValid'");
+        if(!lettersPerWordMatch(guess)) {
+            return false;
+        }
+
+        if(!onlyAlphabet(guess)) {
+            return false;
+        }
+
+        return true;
     }
 }

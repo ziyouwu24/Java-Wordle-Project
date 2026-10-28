@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import wordle.Gamemode;
+import wordle.observers.EventBus;
+import wordle.observers.GameEvent;
 
 public abstract class Board {
     public static final int DEFAULT_TOTAL_GUESSES = 6;
@@ -24,14 +26,32 @@ public abstract class Board {
     }
 
     public final void addGuess(String guess) {
-        if(isValid(guess)) {
-            guesses.add(guess); 
+        if(guess == null) {
+            EventBus.getInstance().newEvent(GameEvent.INVALID_GUESS);
+            return;
+        }
+
+        if(guesses.size() >= totalGuesses) {
+            EventBus.getInstance().newEvent(GameEvent.MAX_GUESSES);
+            return;
+        }
+
+        String cleanedGuess = guess.toUpperCase();
+
+        if(isValid(cleanedGuess)) {
+            EventBus.getInstance().newEvent(GameEvent.VALID_GUESS);
+            guesses.add(cleanedGuess); 
+        }else{
+            EventBus.getInstance().newEvent(GameEvent.INVALID_GUESS);
         }
     }
 
-    public String display() {
+    protected boolean lettersPerWordMatch(String guess) {
+        return guess.length() == lettersPerWord;
+    }
 
-        throw new UnsupportedOperationException("Display is not implemented yet.");
+    protected boolean onlyAlphabet(String guess) {
+        return guess.matches("[a-zA-Z]+");
     }
 
     protected abstract boolean isValid(String guess);

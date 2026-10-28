@@ -27,8 +27,8 @@ public class Game {
     }
 
     public static class Builder {
-        private final String DEFAULT_TARGET_LIST = "/wordlist.txt";
-        private final String DEFAULT_GUESS_LIST = "/wordlist.txt";
+        private final String DEFAULT_TARGET_LIST = "/commonwords.txt";
+        private final String DEFAULT_GUESS_LIST = "/rarewords.txt";
 
         private String customWord;
         private int lettersPerWord = Board.DEFAULT_LETTERS_PER_WORD;
@@ -45,7 +45,7 @@ public class Game {
         }
 
         public Builder setLettersPerWord(int lettersPerWord) {
-            if(lettersPerWord < 1) {
+            if(lettersPerWord < 0) {
                 throw new RuntimeException("Invalid letters per word");
             }
 
@@ -93,6 +93,8 @@ public class Game {
                 if(targetWord == null) {
                     targetWord = selectTargetWord();
                 }
+
+                System.out.println(targetWord);
 
                 List<String> validWords = txtToList(guessList);
 
