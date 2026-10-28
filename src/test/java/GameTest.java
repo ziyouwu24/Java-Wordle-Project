@@ -1,6 +1,9 @@
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import wordle.Game;
@@ -8,90 +11,74 @@ import wordle.boards.BoardFactory;
 import wordle.observers.EventBus;
 import wordle.observers.TestObserver;
 
-public class GameTest {
-    private BoardFactory boardFactory;
+class GameTest {
 
-    public GameTest() {
-        this.boardFactory = new BoardFactory();
+    private final BoardFactory boardFactory = new BoardFactory();
+    private final EventBus eventBus = EventBus.getInstance();
+
+    private TestObserver testObserver;
+
+    @BeforeEach
+    void setUp() {
+        testObserver = new TestObserver();
+        eventBus.register(testObserver);
     }
 
-    @Test 
-    void testMaxGuesses() {
-        TestObserver testObserver = new TestObserver();
-        EventBus.getInstance().register(testObserver);
+    @AfterEach
+    void tearDown() {
+        eventBus.deregister(testObserver);
+    }
 
-        Game game = Game.getBuilder(boardFactory)
-            .setTotalGuesses(1)
-            .build();
-        
+    private Game createGame(int lettersPerWord, int totalGuesses) {
+        return Game.getBuilder(boardFactory)
+                .setLettersPerWord(lettersPerWord)
+                .setTotalGuesses(totalGuesses)
+                .build();
+    }
+
+    @Test
+    void shouldNotifyWhenMaximumGuessesAreReached() {
+        Game game = createGame(5, 1);
+
         game.submitGuess("guess");
         game.submitGuess("guess");
 
         assertTrue(testObserver.guessesMaxed());
-
-        EventBus.getInstance().deregister(testObserver);
     }
 
-    @Test 
-    void testValidGuess() {
-        TestObserver testObserver = new TestObserver();
-        EventBus.getInstance().register(testObserver);
+    @Test
+    void shouldCountValidGuess() {
+        Game game = createGame(2, 6);
 
-        Game game = Game.getBuilder(boardFactory)
-            .setLettersPerWord(2)
-            .build();
-        
         game.submitGuess("aa");
 
-        assertEquals(testObserver.validGuesses(), 1);
-
-        EventBus.getInstance().deregister(testObserver);
+        assertEquals(1, testObserver.validGuesses());
     }
 
-    @Test 
-    void testWrongAmountOfLetters() {
-        TestObserver testObserver = new TestObserver();
-        EventBus.getInstance().register(testObserver);
+    @Test
+    void shouldRejectGuessWithIncorrectLength() {
+        Game game = createGame(2, 6);
 
-        Game game = Game.getBuilder(boardFactory)
-            .setLettersPerWord(2)
-            .build();
-        
         game.submitGuess("aaa");
 
-        assertEquals(testObserver.invalidGuesses(), 1);
-
-        EventBus.getInstance().deregister(testObserver);
+        assertEquals(1, testObserver.invalidGuesses());
     }
 
-    @Test 
-    void testNullGuess() {
-        TestObserver testObserver = new TestObserver();
-        EventBus.getInstance().register(testObserver);
+    @Test
+    void shouldRejectNullGuess() {
+        Game game = createGame(5, 6);
 
-        Game game = Game.getBuilder(boardFactory)
-            .build();
-        
         game.submitGuess(null);
 
-        assertEquals(testObserver.invalidGuesses(), 1);
-
-        EventBus.getInstance().deregister(testObserver);
+        assertEquals(1, testObserver.invalidGuesses());
     }
 
-    @Test 
-    void testSymbolsAndNumbers() {
-        TestObserver testObserver = new TestObserver();
-        EventBus.getInstance().register(testObserver);
+    @Test
+    void shouldRejectGuessContainingSymbolsAndNumbers() {
+        Game game = createGame(5, 6);
 
-        Game game = Game.getBuilder(boardFactory)
-            .setLettersPerWord(5)
-            .build();
-        
         game.submitGuess("5%02a");
 
-        assertEquals(testObserver.invalidGuesses(), 1);
-
-        EventBus.getInstance().deregister(testObserver);
+        assertEquals(1, testObserver.invalidGuesses());
     }
 }
