@@ -13,10 +13,12 @@ public abstract class Board {
     private final String targetWord;
     private final int totalGuesses;
     private final int lettersPerWord;
+    private final List<String> validWords;
     private final List<String> guesses = new ArrayList<>();
 
-    public Board(String correctWord, int totalGuesses, int lettersPerWord) {
-        this.targetWord = correctWord;
+    public Board(String targetWord, List<String> validWords, int totalGuesses, int lettersPerWord) {
+        this.targetWord = targetWord;
+        this.validWords = validWords;
         this.totalGuesses = totalGuesses;
         this.lettersPerWord = lettersPerWord;
     }

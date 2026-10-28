@@ -46,8 +46,7 @@ public class Game {
 
         public Builder setLettersPerWord(int lettersPerWord) {
             if(lettersPerWord < 1) {
-
-                return this;
+                throw new RuntimeException("Invalid letters per word");
             }
 
             this.lettersPerWord = lettersPerWord;
@@ -55,7 +54,9 @@ public class Game {
         }
 
         public Builder setTotalGuesses(int totalGuesses) {
-
+            if(lettersPerWord < 0) {
+                throw new RuntimeException("Invalid total guesses");
+            }
 
             this.totalGuesses = totalGuesses;
             return this;
@@ -67,29 +68,58 @@ public class Game {
         }
 
         public Builder setCustomWord(String customWord) {
-            
+            if(customWord.length() != lettersPerWord) {
+                throw new RuntimeException("Custom word must match letters per word");
+            }
 
             this.customWord = customWord;
             return this;
         }
 
-        public Game build() {
-            String targetWord = customWord;
-
-            if(targetWord == null) {
-                targetWord = selectWord();
-            }
-
-            Board board = BoardFactory.createBoard(gamemode);
-            return new Game(this);
+        public Builder setTargetList(String targetList) {
+            this.targetList = targetList;
+            return this;
         }
 
-        private String selectWord() throws IOException {
-            InputStream input = getClass()
-                    .getResourceAsStream(targetList);
+        public Builder setGuessList(String guessList) {
+            this.guessList = guessList;
+            return this;
+        }
+
+        public Game build() {
+            try {
+                String targetWord = customWord;
+
+                if(targetWord == null) {
+                    targetWord = selectTargetWord();
+                }
+
+                List<String> validWords = txtToList(guessList);
+
+                Board board = boardFactory.createBoard(
+                    gamemode, 
+                    targetWord, 
+                    validWords, 
+                    totalGuesses, 
+                    lettersPerWord
+                );
+
+                return new Game(board);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to build game", e);
+            }
+        }
+
+        private String selectTargetWord() throws IOException {
+            List<String> words = txtToList(targetList);
+            return words.get(new Random().nextInt(words.size()));
+        }
+
+        private List<String> txtToList(String list) throws IOException {
+            InputStream input = getClass().getResourceAsStream(list);
 
             if (input == null) {
-                throw new IOException("Could not find target list");
+                throw new IOException("Could not find list: " + list);
             }
 
             try (BufferedReader reader = new BufferedReader(
@@ -105,7 +135,7 @@ public class Game {
                     throw new IOException("No valid words found");
                 }
 
-                return words.get(new Random().nextInt(words.size()));
+                return words;
             }
         }
     }

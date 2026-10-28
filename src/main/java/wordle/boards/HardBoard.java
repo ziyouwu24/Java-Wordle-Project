@@ -1,8 +1,10 @@
 package wordle.boards;
 
+import java.util.List;
+
 public class HardBoard extends Board {
-    public HardBoard(String correctWord, int totalGuesses, int lettersPerWord) {
-        super(correctWord, totalGuesses, lettersPerWord);
+    public HardBoard(String targetWord, List<String> validWords, int totalGuesses, int lettersPerWord) {
+        super(targetWord, validWords, totalGuesses, lettersPerWord);
     }
 
     @Override
